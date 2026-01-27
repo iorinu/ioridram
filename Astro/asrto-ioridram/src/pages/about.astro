@@ -1,37 +1,39 @@
-
 ---
-
+import "../styles/global.css";
 ---
 
 <html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Astro</title>
+  </head>
+  <body>
     <header>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/blog">Blog</a>
+      <h1>きっと何物にもなれる</h1>
+    </header>
+
+    <section>
       <h1>Iori's Portfolio<span class="cursor"></span></h1>
       <div class="subtitle">Graduate Student / Developer</div>
       <p style="margin-top: 20px">
-        Affiliation: <strong>Osaka University, School of Engineering</strong
-        ><br />
+        Affiliation: <strong>Osaka University, School of Engineering</strong><br
+        />
         <a href="https://github.com/tomatotamada" target="_blank"
           >GitHub: tomatotamada</a
         >
       </p>
-    </header>
-
-    <section>
       <h2>About Me</h2>
       <p>
-        大阪大学工学部所属。主に連合学習（Federated
+        工学部所属。主に連合学習（Federated
         Learning）やプライバシー保護技術について研究しています。<br />
-        また、CTF（Capture The
-        Flag）を通じてセキュリティ技術の学習も行っています。
+        また、CTF（Capture The Flag）を通じてセキュリティ技術の学習も行っています。
       </p>
     </section>
 
@@ -80,7 +82,8 @@
     </section>
 
     <footer>&copy; 2026 Iori</footer>
-    <script src="script.js"></script>
   </body>
-	</body>
 </html>
+<script>
+  import "../scripts/script.js";
+</script>

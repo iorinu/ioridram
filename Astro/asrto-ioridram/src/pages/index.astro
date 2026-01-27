@@ -1,20 +1,123 @@
 ---
-
+import "../styles/global.css";
 ---
 
 <html lang="ja">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>ioridram</title>
+  </head>
   <body>
-    <a href="/">Home</a>
-    <a href="/about">About</a>
-    <a href="/blog">Blog</a>
-		<h1>きっと何物にもなれない</h1>
-	</body>
+    <header>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/blog">Blog</a>
+      <h1>きっと何物にもなれる</h1>
+    </header>
+    <main class="profile-container">
+      <div class="icon-wrapper">
+        <img
+          src="/public/icon.jfif"
+          alt="Profile Picture"
+          class="profile-icon"
+        />
+      </div>
+      <div class="social-links">
+        <a
+          href="https://github.com/tomatotamada"
+          target="_blank"
+          aria-label="GitHub"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            ></path>
+          </svg>
+        </a>
+
+        <a
+          href="https://twitter.com/ioridram"
+          target="_blank"
+          aria-label="X (Twitter)"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+            ></path>
+          </svg>
+        </a>
+      </div>
+    </main>
+  </body>
+
+  <script>
+    import "../scripts/script.js";
+  </script>
+
+  <style>
+    /* メインコンテンツ（中央寄せエリア） */
+    .profile-container {
+      flex: 1; /* 残りの高さを全部使う */
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* 水平方向中央 */
+      justify-content: center; /* 垂直方向中央 */
+      padding-bottom: 100px; /* 少し上にずらすための余白 */
+    }
+
+    /* アイコン画像 */
+    .profile-icon {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%; /* 丸くする */
+      object-fit: cover;
+      border: 3px solid #ff003c; /* 赤い縁取り */
+      box-shadow: 0 0 20px rgba(255, 0, 60, 0.4); /* ぼんやり光らせる */
+      margin-bottom: 30px;
+      transition: transform 0.3s ease;
+    }
+    .profile-icon:hover {
+      transform: scale(1.05); /* ホバーで少し拡大 */
+      box-shadow: 0 0 30px rgba(255, 0, 60, 0.8);
+    }
+
+    /* SNSリンクの並び */
+    .social-links {
+      display: flex;
+      gap: 30px; /* アイコン同士の間隔 */
+    }
+
+    .social-links a {
+      color: #888;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: #ff003c; /* ホバーで赤く光る */
+      transform: translateY(-3px); /* 少し浮く */
+      filter: drop-shadow(0 0 8px #ff003c);
+    }
+
+    /* SVGアイコンのサイズ調整 */
+    .social-links svg {
+      width: 32px;
+      height: 32px;
+    }
+  </style>
 </html>
