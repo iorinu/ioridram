@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
 
           # ローカルのどのフォルダをアップロードするか
-          local-dir: ./dist/
+          local-dir: ./Astro/astro-ioridram/dist/
 
           # サーバーのどこに置くか
           server-dir: ./ioridram/
