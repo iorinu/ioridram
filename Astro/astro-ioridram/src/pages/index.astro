@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css";
-import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
 ---
 
 <html lang="ja">
@@ -15,8 +15,8 @@ import Footer from "../components/Footer.astro";
   </head>
   <body>
     <header>
-      <Navigation />
-      <h1>きっと何物にもなれる</h1>
+      <Header />
+      <h1 class="glitch-text">きっと何物にもなれる</h1>
     </header>
     <main class="profile-container">
       <div class="icon-wrapper">
@@ -64,7 +64,7 @@ import Footer from "../components/Footer.astro";
   </body>
 
   <script>
-    import "../scripts/script.js";
+    import "../scripts/glitch.ts";
   </script>
 
   <style>
