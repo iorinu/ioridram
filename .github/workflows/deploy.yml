@@ -5,6 +5,10 @@ on:
     branches:
       - main # mainブランチにプッシュされた時だけ動く
 
+defaults:
+  run:
+    working-directory: ./Astro/astro-ioridram
+
 jobs:
   web-deploy:
     name: Build and Deploy
@@ -20,6 +24,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20" # Astroが動くバージョン
+          cache: "npm"
+          cache-dependency-path: "./Astro/astro-ioridram/package-lock.json"
 
       # 3. 依存ライブラリのインストール
       - name: Install dependencies
