@@ -1,0 +1,28 @@
+---
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>ioridram</title>
+  </head>
+  <body>
+    <header>
+      <Header />
+      <h1 class="glitch-text">きっと何物にもなれる</h1>
+    </header>
+    <slot />
+    <Footer />
+  </body>
+
+  <script>
+    import "../scripts/glitch.ts";
+  </script>
+</html>
