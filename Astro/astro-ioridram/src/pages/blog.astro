@@ -1,15 +1,22 @@
 ---
 import "../styles/global.css";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import BlogPost from "../components/BlogPost.astro";
+
 const pageTitle = "ioridram Blog";
+const allPosts = await Astro.glob("./post/*.md");
 ---
 
 <BaseLayout pageTitle={"blog/ioridram"}>
   <p>ブログページは現在準備中です。しばらくお待ちください。</p>
   <ul>
-    <li><a href="../post/post-1">記事1</a></li>
+    <!-- <li><a href="../post/post-1">記事1</a></li>
     <li><a href="post/post-2">記事2</a></li>
-    <li><a href="post/post-3">記事3</a></li>
-    <ul></ul>
+    <li><a href="post/post-3">記事3</a></li> -->
+    {
+      allPosts.map((post) => (
+        <BlogPost url={post.url} title={post.frontmatter.title} />
+      ))
+    }
   </ul>
 </BaseLayout>
