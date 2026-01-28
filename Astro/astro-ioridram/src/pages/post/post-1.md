@@ -2,6 +2,7 @@
 layout: ../../layouts/MarkdownPostLayout.astro
 title: 最初の記事
 date: 2026/01/28
+tags: ["astro", "blog", "programming", "neovim"]
 ---
 
 
