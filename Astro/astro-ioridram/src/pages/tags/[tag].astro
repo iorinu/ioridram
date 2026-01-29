@@ -9,22 +9,19 @@ export async function getStaticPaths() {
   ];
 
   return uniqueTags.map((tag) => {
-  const filteredPosts = allPosts.filter((post) =>
-  post.frontmatter.tags && post.frontmatter.tags.includes(tag),
-  );
+    const filteredPosts = allPosts.filter((post) =>
+      post.frontmatter.tags?.includes(tag),
+    );
 
     return {
       params: { tag: tag },
       props: { posts: filteredPosts },
     };
-    });
-
+  });
+}
 
 const { tag } = Astro.params;
 const { posts } = Astro.props;
-const filteredPosts = posts.filter(
-  (post) => post.frontmatter.tags && post.frontmatter.tags.includes(tag),
-);
 ---
 
 <BaseLayout title={`Tag: ${tag}`}>
