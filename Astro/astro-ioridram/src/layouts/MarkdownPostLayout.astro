@@ -2,11 +2,26 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 const { frontmatter } = Astro.props;
 ---
+<style>
+  .tags {
+  display: flex;
+  flex-wrap: wrap;
+</style>
 
 <BaseLayout pageTitle={frontmatter.title}>
   <article class="markdown-post">
     <h1>{frontmatter.title}</h1>
     <p class="post-date">Published on: {frontmatter.date}</p>
     <slot />
+    <div class="tags">
+      Tags:
+      {
+        frontmatter.tags.map((tag) => (
+          <p class="tag">
+            <a href={`/tags/${tag}`}>{tag}</a>
+          </p>
+        ))
+      }
+    </div>
   </article>
 </BaseLayout>
