@@ -47,7 +47,10 @@ import Greetings from "../components/Greeting.jsx";
       </a>
     </div>
   </main>
-  <Greetings messages={["こんにちは", "Helo"]} />
+  <Greetings
+    client:load
+    messages={["こんにちは", "Hello", "はじめまして", "ようこそ"]}
+  />
 </BaseLayout>
 
 <style>
