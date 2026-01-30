@@ -4,8 +4,8 @@ pubDate: 2026-01-29
 description: "これは最初の記事です"
 author: "iori"
 image:
-  url: 'https://docs.astro.build/assets/full-logo-light.png'
-  alt: 'Astroのロゴ'
+  url: '/images/posts/mentaitorisoboro.jpg'
+  alt: '明太マヨ旨だしとりそぼろ丼'
 tags: ["blog", "ごはん"]
 ---
 
