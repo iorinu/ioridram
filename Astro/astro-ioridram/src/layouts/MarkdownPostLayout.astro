@@ -11,7 +11,7 @@ const { frontmatter } = Astro.props;
 <BaseLayout pageTitle={frontmatter.title}>
   <article class="markdown-post">
     <h1>{frontmatter.title}</h1>
-    <p class="post-date">Published on: {frontmatter.date}</p>
+    <p class="post-date">Published on: {frontmatter.pubDate.toString()}</p>
     <slot />
     <div class="tags">
       Tags:

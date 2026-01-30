@@ -1,7 +1,11 @@
 ---
-layout: ../../layouts/MarkdownPostLayout.astro
 title: 最初の記事
-date: 2026/01/28
+pubDate: 2026-01-28
+description: "これは最初の記事です"
+author: "iori"
+image:
+  url: 'https://docs.astro.build/assets/full-logo-light.png'
+  alt: 'Astroのロゴ'
 tags: ["astro", "blog", "programming", "neovim"]
 ---
 
