@@ -1,10 +1,9 @@
 ---
 layout: ../../layouts/MarkdownPostLayout.astro
-title: 準備中
+title: すき家の最強メニューは明太マヨ旨だしとりそぼろ丼、異論は認める
 date: 2026/01/29
-tags: ["blog", "programming", "neovim"]
+tags: ["blog", "ごはん"]
 ---
 
 
-
-準備中
+すき家
