@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import { ViewTransitions } from "astro:transitions";
 
 const { pageTitle } = Astro.props;
 ---
@@ -14,6 +15,7 @@ const { pageTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
+    <ViewTransitions />
   </head>
   <body>
     <header>
@@ -22,9 +24,7 @@ const { pageTitle } = Astro.props;
     </header>
     <slot />
     <Footer />
-  </body>
-
-  <script>
+  </body><script>
     import "../scripts/glitch.ts";
   </script>
 </html>
