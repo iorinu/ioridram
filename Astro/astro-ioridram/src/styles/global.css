@@ -158,3 +158,12 @@ footer {
   text-align: center;
   letter-spacing: 2px;
 }
+HackGenConsoleNF-Regular.ttf
+//フォントの設定　HackGenを使用
+@font-face {
+  font-family: "HackGenConsoleNF";
+  src: url("/fonts/HackGenConsoleNF-Regular.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
