@@ -16,7 +16,11 @@ const allPosts = await getCollection("posts");
     <li><a href="post/post-3">記事3</a></li> -->
     {
       allPosts.map((post) => (
-        <BlogPost url={`/posts/${post.slug}`} title={post.data.title} />
+        <BlogPost
+          url={`/posts/${post.slug}`}
+          title={post.data.title}
+          image={post.data.image}
+        />
       ))
     }
   </ul>

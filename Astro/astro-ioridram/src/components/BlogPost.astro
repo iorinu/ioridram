@@ -1,7 +1,36 @@
 ---
-const { url, title } = Astro.props;
+const { url, title, image } = Astro.props;
 ---
 
-<li>
-  <a href={url}>{title}</a>
+<li class="blog-post-item">
+  {image && <img src={image.url} alt={image.alt || ""} class="thumbnail" />}
+  <a href={url} class="title">{title}</a>
 </li>
+
+<style>
+  /* 横並びにして、垂直方向の真ん中で揃える */
+  .blog-post-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 15px; /* 画像と文字の間隔 */
+  }
+
+  /* 画像のスタイル */
+  .thumbnail {
+    width: 80px; /* サムネの幅 */
+    height: 80px; /* 正方形にする */
+    object-fit: cover; /* 画像を歪ませずにトリミング */
+    border-radius: 4px; /* 角を少し丸める */
+  }
+
+  .title {
+    font-weight: bold;
+    font-size: 1.3rem;
+  }
+
+  .title:hover {
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+</style>
