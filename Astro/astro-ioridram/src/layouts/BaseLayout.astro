@@ -28,16 +28,17 @@ const { pageTitle } = Astro.props;
       gtag("js", new Date());
 
       gtag("config", "G-62PJ8Q2L10");
-    </script>onfig', 'G-62PJ8Q2L10');
+    </script>
   </head>
+  <body>
+    <header>
+      <Header />
+      <h1 class="glitch-text">Iori WEB</h1>
+    </header>
+    <slot />
+    <Footer />
+  </body>
 </html>
-<body>
-  <header>
-    <Header />
-    <h1 class="glitch-text">Iori WEB</h1>
-  </header>
-  <slot />
-  <Footer />
-</body><script>
+<script>
   import "../scripts/glitch.ts";
 </script>
