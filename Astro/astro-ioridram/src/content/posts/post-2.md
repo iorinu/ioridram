@@ -50,5 +50,62 @@ tags: ["blog", "programming", "neovim"]
 では次に初期設定について説明します。
 
 ## 設定方法
-記述中
+
+### 1. Twitter API キーの取得
+
+まずはTwitter Developer Portalでアプリを作成し、APIキーを取得する必要があります。
+
+1. [Twitter Developer Portal](https://developer.twitter.com/en/portal/dashboard) にアクセス
+2. 「Projects & Apps」から新しいプロジェクトを作成
+3. App permissionsを「Read and Write」に設定（ツイートするために書き込み権限が必要）
+4. 以下の4つのキーをメモしておく
+   - API Key
+   - API Key Secret
+   - Access Token
+   - Access Token Secret
+
+### 2. プラグインのインストール
+
+lazy.nvimを使用している場合：
+
+```lua title="lazy.nvim"
+{
+  "tomatotamada/nvim-twitter-poster",
+  config = function()
+    require("nvim-twitter-poster").setup({
+      api_key = "YOUR_API_KEY",
+      api_key_secret = "YOUR_API_KEY_SECRET",
+      access_token = "YOUR_ACCESS_TOKEN",
+      access_token_secret = "YOUR_ACCESS_TOKEN_SECRET",
+    })
+  end,
+}
+```
+
+
+### 3. キーバインドの設定
+
+毎回コマンドを打つのは面倒なので、キーバインドを設定しておくと便利です。
+
+```lua title="keymaps.lua"
+-- 1行ツイート用（入力プロンプトが表示される）
+vim.keymap.set("n", "<leader>tw", ":Tweet ", { desc = "Tweet" })
+
+-- 選択範囲をツイート
+vim.keymap.set("v", "<leader>tw", ":TweetSelection<CR>", { desc = "Tweet selection" })
+```
+
+### セキュリティに関する注意
+
+APIキーをdotfilesなどで公開リポジトリに上げてしまうと悪用される恐れがあります。
+環境変数を使って設定するか、gitignoreに含まれる別ファイルに保存することをおすすめします。
+
+
+## まとめ
+
+これでneovimからシームレスにツイートできるようになりました。
+ターミナルの見た目はコードを書いているようにしか見えないので、周囲の目を気にせずツイートできます。
+
+
+何かバグや機能追加のリクエストがあれば、GitHubのIssueやPRをお待ちしています！
 
