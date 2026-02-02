@@ -6,6 +6,13 @@ import { getCollection } from "astro:content";
 
 const pageTitle = "ioridram Blog";
 const allPosts = await getCollection("posts");
+
+// post-1, post-2, post-3 の順番でソート
+allPosts.sort((a, b) => {
+  const numA = parseInt(a.slug.match(/\d+/)?.[0] ?? "0");
+  const numB = parseInt(b.slug.match(/\d+/)?.[0] ?? "0");
+  return numA - numB;
+});
 ---
 
 <BaseLayout pageTitle={"blog/ioridram"}>
