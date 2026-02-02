@@ -8,29 +8,79 @@ const { url, title, image } = Astro.props;
 </li>
 
 <style>
-  /* 横並びにして、垂直方向の真ん中で揃える */
+  /* グラスモーフィズムカード */
   .blog-post-item {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
-    gap: 15px; /* 画像と文字の間隔 */
+    margin-bottom: 1.2rem;
+    gap: 18px;
+    padding: 16px;
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
   }
 
-  /* 画像のスタイル */
+  .blog-post-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 0, 60, 0.05),
+      rgba(106, 0, 255, 0.05),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .blog-post-item:hover {
+    transform: translateX(8px);
+    border-color: rgba(106, 0, 255, 0.3);
+    box-shadow: 0 8px 30px rgba(106, 0, 255, 0.15),
+                0 0 0 1px rgba(106, 0, 255, 0.1);
+  }
+
+  .blog-post-item:hover::before {
+    left: 100%;
+  }
+
+  /* サムネイル */
   .thumbnail {
-    width: 80px; /* サムネの幅 */
-    height: 80px; /* 正方形にする */
-    object-fit: cover; /* 画像を歪ませずにトリミング */
-    border-radius: 4px; /* 角を少し丸める */
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.4s ease;
+    flex-shrink: 0;
   }
 
+  .blog-post-item:hover .thumbnail {
+    border-color: rgba(255, 0, 60, 0.5);
+    box-shadow: 0 0 20px rgba(255, 0, 60, 0.3);
+  }
+
+  /* タイトル */
   .title {
     font-weight: bold;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border-bottom: none;
   }
 
-  .title:hover {
-    font-weight: bold;
-    font-size: 1.5rem;
+  .blog-post-item:hover .title {
+    background: linear-gradient(135deg, #ff003c, #6a00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 </style>
