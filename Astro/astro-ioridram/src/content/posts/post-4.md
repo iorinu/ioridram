@@ -1,0 +1,114 @@
+
+---
+title: ポリネシアンWebブラウザ自作、1日目
+pubDate: 2026-02-05
+description: "Webブラウザ自作記事1日目"
+author: "iori"
+image:
+  url: '/images/posts/browser_icon.png'
+  alt: 'ブラウザ'
+tags: ["programming", "Rust"]
+---
+
+## Webブラウザを作りたい
+という漠然とした願望からどうせやるならしっかりアウトプットして証拠を残しつつフェードアウトしないようにしようということで記事にしながら作成します。
+
+OSを作るのと迷いましたが、どうせならCTFで使えそうな分野のほうが嬉しい、というものがあったので今回はブラウザを自作することにします。
+いずれはOSも自作してみたいです。
+## 参考サイト
+今回はこのサイトを参考にしました。
+
+[ちいさなWebブラウザを作ろう](https://browserbook.shift-js.info/)
+
+このサイトによると
+>本オンラインブックはセキュリティ・キャンプ全国大会 2021 オンラインの講義「ちいさな Web ブラウザを作ってみよう」 の事前課題資料です。
+
+ということでWebブラウザ作成を通してセキュリティの勉強もしたいという自分には適していそうです。
+
+使用言語はRust、OSはWSLを用いてLinuxにて開発します。
+
+## 環境構築
+### Rustの準備
+今回使用する言語はRustで、初めて使う言語のためいろいろ準備していきます。
+試しに入っているか確認
+```sh
+iori@DESKTOP-FSV2FBD:~$ rustc --version
+Command 'rustc' not found, but can be installed with:
+sudo snap install rustup  # version 1.28.2, or
+sudo apt  install rustc   # version 1.75.0+dfsg0ubuntu1-0ubuntu7.1
+sudo apt  install rustup  # version 1.26.0-3
+See 'snap info rustup' for additional versions.
+```
+もちろん入っていないので、まずは公式サイトの指示に従い以下のコマンドでRustをインストールします。
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+すると以下のような画面になります。
+```sh
+iori@DESKTOP-FSV2FBD:~$ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+info: downloading installer
+
+Welcome to Rust!
+
+This will download and install the official compiler for the Rust
+programming language, and its package manager, Cargo.
+
+Rustup metadata and toolchains will be installed into the Rustup
+home directory, located at:
+
+  /home/iori/.rustup
+
+This can be modified with the RUSTUP_HOME environment variable.
+
+The Cargo home directory is located at:
+
+  /home/iori/.cargo
+
+This can be modified with the CARGO_HOME environment variable.
+
+The cargo, rustc, rustup and other commands will be added to
+Cargo's bin directory, located at:
+
+  /home/iori/.cargo/bin
+
+This path will then be added to your PATH environment variable by
+modifying the profile files located at:
+
+  /home/iori/.profile
+  /home/iori/.bashrc
+
+You can uninstall at any time with rustup self uninstall and
+these changes will be reverted.
+
+Current installation options:
+
+
+   default host triple: x86_64-unknown-linux-gnu
+     default toolchain: stable (default)
+               profile: default
+  modify PATH variable: yes
+
+1) Proceed with standard installation (default - just press enter)
+2) Customize installation
+3) Cancel installation
+>
+```
+
+どうやらrustupやcargoがどこに入ったかとPATHの話をしているっぽいですね。
+最後の3択はインストールオプションのようなので、今回はスタンダードを選択。
+バージョンを確認してみて
+```sh
+iori@DESKTOP-FSV2FBD:~$ rustc --version
+rustc 1.93.0 (254b59607 2026-01-19
+iori@DESKTOP-FSV2FBD:~$ cargo version
+cargo 1.93.0 (083ac5135 2025-12-15)
+```
+無事インストールが成功しました。
+
+### ソースコードエディタ
+エディタはもちろんneovimを使います。
+
+
+ということで今回は環境構築までにします。
+多分2日目は前提の整理という章を勉強しようと思います(めんどくさくなったらHTMLを取り扱うからいくかも)。
