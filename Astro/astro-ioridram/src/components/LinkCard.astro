@@ -1,0 +1,142 @@
+---
+interface Props {
+  url: string;
+  title: string;
+  description?: string;
+}
+
+const { url, title, description } = Astro.props;
+const hostname = new URL(url).hostname;
+const favicon = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+---
+
+<a href={url} target="_blank" rel="noopener noreferrer" class="link-card">
+  <div class="link-card-content">
+    <div class="link-card-header">
+      <img src={favicon} alt="" class="link-card-favicon" width="20" height="20" />
+      <span class="link-card-title">{title}</span>
+    </div>
+    {description && <p class="link-card-description">{description}</p>}
+    <span class="link-card-url">{url}</span>
+  </div>
+  <div class="link-card-arrow">&#8599;</div>
+</a>
+
+<style>
+  .link-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    margin: 1.2rem 0;
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 3px solid var(--accent-color);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    /* reset global link styles */
+    border-bottom: none;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    filter: none;
+  }
+
+  .link-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 0, 60, 0.05),
+      rgba(106, 0, 255, 0.05),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .link-card:hover {
+    border-color: rgba(106, 0, 255, 0.3);
+    border-left-color: var(--sub-color);
+    box-shadow: 0 8px 30px rgba(106, 0, 255, 0.15),
+                0 0 0 1px rgba(106, 0, 255, 0.1);
+    transform: translateY(-2px);
+    background: rgba(20, 20, 25, 0.8);
+    -webkit-text-fill-color: unset;
+    filter: none;
+  }
+
+  .link-card:hover::before {
+    left: 100%;
+  }
+
+  .link-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .link-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .link-card-favicon {
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .link-card-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    transition: color 0.3s ease;
+  }
+
+  .link-card:hover .link-card-title {
+    color: var(--accent-color);
+  }
+
+  .link-card-description {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(192, 192, 192, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .link-card-url {
+    font-size: 0.75rem;
+    color: rgba(192, 192, 192, 0.4);
+    font-family: var(--font-mono);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .link-card-arrow {
+    font-size: 1.4rem;
+    color: rgba(192, 192, 192, 0.3);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+
+  .link-card:hover .link-card-arrow {
+    color: var(--sub-color);
+    transform: translate(3px, -3px);
+  }
+</style>
