@@ -3,7 +3,7 @@ import {getCollection} from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 const pageTitle = "タグ一覧";
 
-const allPosts = await getCollection("posts");
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 ---
 <style>
