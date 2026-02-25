@@ -1,19 +1,54 @@
 
 
 ---
-title: ポリネシアンWebブラウザ自作、2日目 HTMLを取り扱う
-pubDate: 2026-02-10
+title: ポリネシアンWebブラウザ自作、2日目 Rustの勉強
+pubDate: 2026-02-26
 description: "Webブラウザ自作記事2日目"
 author: "iori"
 image:
   url: '/images/posts/browser_icon.png'
   alt: 'ブラウザ'
 tags: ["programming", "Rust"]
-draft: true
 ---
 import LinkCard from '../../components/LinkCard.astro';
 
 
-今回はHTMLのパース処理について勉強していきます。
-基本的にここから何日かはJavaScriptがないページを表示できるようなブラウザの作成を目標にしています。
+長らく更新が止まってしまいましたが、WEBブラウザ作成を再開します。今回はRustの勉強をしていきます。
+まずやったこととしては、
+* Tour of Rustをやる
+* Rustでテトリスを作る
+
+の2つです。
+[Tour of Rust](https://tourofrust.com/00_ja.html)は、ブラウザで実行できる形でRustの基本的な文法や機能を学ぶことができます。
+公式ドキュメントも軽く見ましたが、最初軽く触れるにはTour of Rustがやりやすいです。
+とりあえず6章のテキストまで進めたのですが、ここらへんで飽きてきたので実際に何か作ってみようと思い、テトリスを作ることにしました。
+
+テトリス作成はこの記事を参考にしました。
+<LinkCard
+  title="Rustで作るテトリス風ゲーム入門"
+  url="https://zenn.dev/kumavale/books/30efec2e1d3428"
+  image="/images/posts/tetris.png"
+/>
+
+ほぼほぼ写経みたいな感じではありますが、
+* 構造体
+* pubとprivate
+* impl
+* match文
+* パッケージの調べ方
+* ファイルの分け方
+* 簡単な借用の考え方
+
+あたりが勉強になりました。
+できたテトリスのリポジトリはここに載せておきます。
+<LinkCard
+  title="Rust_tetris"
+  url="https://github.com/tomatotamada/Rust_tetris"
+  image="/images/posts/tetris.png"
+/>
+
+やってるうちにRustで何か作るのが楽しくなってきて、
+今はターミナルで動かせるtodoリストを作っているのですが、これも完成したら載せておきます。
+
+Rustの勉強はぼちぼちにしてそろそろブラウザ作るほうに戻ろうと思います。
 
