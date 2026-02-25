@@ -230,6 +230,51 @@ img {
   display: block; /* 下に謎の余白ができるのを防ぐ */
 }
 
+/* Expressive Code カスタムスタイル */
+.expressive-code {
+  position: relative;
+  margin: 1.5rem 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.expressive-code:hover {
+  transform: translateY(-2px);
+}
+
+.expressive-code figure {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(106, 0, 255, 0.1);
+  transition: box-shadow 0.4s ease;
+}
+
+.expressive-code:hover figure {
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(106, 0, 255, 0.3),
+    0 0 20px rgba(106, 0, 255, 0.1);
+}
+
+/* インラインコード */
+:not(pre) > code {
+  background: rgba(106, 0, 255, 0.15);
+  border: 1px solid rgba(106, 0, 255, 0.2);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: #d0bfff;
+  transition: all 0.3s ease;
+}
+
+:not(pre) > code:hover {
+  background: rgba(106, 0, 255, 0.25);
+  border-color: rgba(106, 0, 255, 0.4);
+  box-shadow: 0 0 8px rgba(106, 0, 255, 0.2);
+}
+
 /* スムーズスクロール */
 html {
   scroll-behavior: smooth;
