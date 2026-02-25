@@ -1,0 +1,217 @@
+---
+interface Props {
+  repo: string;
+}
+
+const { repo } = Astro.props;
+const repoUrl = `https://github.com/${repo}`;
+
+let repoName = repo.split("/")[1] || repo;
+let description = "";
+let stars = 0;
+let language = "";
+let languageColor = "#ccc";
+
+const languageColors: Record<string, string> = {
+  Rust: "#dea584",
+  TypeScript: "#3178c6",
+  JavaScript: "#f1e05a",
+  Python: "#3572A5",
+  Go: "#00ADD8",
+  Java: "#b07219",
+  C: "#555555",
+  "C++": "#f34b7d",
+  "C#": "#178600",
+  Ruby: "#701516",
+  Swift: "#F05138",
+  Kotlin: "#A97BFF",
+  Dart: "#00B4AB",
+  HTML: "#e34c26",
+  CSS: "#563d7c",
+  Shell: "#89e051",
+  Lua: "#000080",
+  Zig: "#ec915c",
+};
+
+try {
+  const res = await fetch(`https://api.github.com/repos/${repo}`);
+  if (res.ok) {
+    const data = await res.json();
+    repoName = data.name;
+    description = data.description || "";
+    stars = data.stargazers_count;
+    language = data.language || "";
+    languageColor = languageColors[language] || "#ccc";
+  }
+} catch (_) {
+  // fallback to defaults
+}
+---
+
+<a href={repoUrl} target="_blank" rel="noopener noreferrer" class="github-card">
+  <div class="github-card-content">
+    <div class="github-card-header">
+      <svg class="github-icon" viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+      </svg>
+      <span class="github-card-repo">{repo}</span>
+    </div>
+    {description && <p class="github-card-description">{description}</p>}
+    <div class="github-card-meta">
+      {language && (
+        <span class="github-card-language">
+          <span class="language-dot" style={`background-color: ${languageColor}`}></span>
+          {language}
+        </span>
+      )}
+      <span class="github-card-stars">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+          <path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
+        </svg>
+        {stars}
+      </span>
+    </div>
+  </div>
+  <div class="github-card-arrow">&#8599;</div>
+</a>
+
+<style>
+  .github-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    margin: 1.2rem 0;
+    background: rgba(20, 20, 25, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 3px solid var(--accent-color);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    border-bottom: none;
+    -webkit-text-fill-color: unset;
+    background-clip: unset;
+    -webkit-background-clip: unset;
+    filter: none;
+  }
+
+  .github-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 0, 60, 0.05),
+      rgba(106, 0, 255, 0.05),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .github-card:hover {
+    border-color: rgba(106, 0, 255, 0.3);
+    border-left-color: var(--sub-color);
+    box-shadow: 0 8px 30px rgba(106, 0, 255, 0.15),
+                0 0 0 1px rgba(106, 0, 255, 0.1);
+    transform: translateY(-2px);
+    background: rgba(20, 20, 25, 0.8);
+    -webkit-text-fill-color: unset;
+    filter: none;
+  }
+
+  .github-card:hover::before {
+    left: 100%;
+  }
+
+  .github-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .github-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .github-icon {
+    color: rgba(192, 192, 192, 0.8);
+    flex-shrink: 0;
+  }
+
+  .github-card-repo {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    transition: color 0.3s ease;
+  }
+
+  .github-card:hover .github-card-repo {
+    color: var(--accent-color);
+  }
+
+  .github-card-description {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgba(192, 192, 192, 0.6);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .github-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.8rem;
+    color: rgba(192, 192, 192, 0.5);
+    font-family: var(--font-mono);
+  }
+
+  .github-card-language {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .language-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .github-card-stars {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .github-card-stars svg {
+    color: rgba(255, 200, 50, 0.7);
+  }
+
+  .github-card-arrow {
+    font-size: 1.4rem;
+    color: rgba(192, 192, 192, 0.3);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+
+  .github-card:hover .github-card-arrow {
+    color: var(--sub-color);
+    transform: translate(3px, -3px);
+  }
+</style>
