@@ -7,11 +7,11 @@ import { getCollection } from "astro:content";
 const pageTitle = "ioridram Blog";
 const allPosts = await getCollection("posts", ({ data }) => !data.draft);
 
-// post-1, post-2, post-3 の順番でソート
+// post-3, post-2, post-1 の順番でソート（新しい記事が上）
 allPosts.sort((a, b) => {
   const numA = parseInt(a.slug.match(/\d+/)?.[0] ?? "0");
   const numB = parseInt(b.slug.match(/\d+/)?.[0] ?? "0");
-  return numA - numB;
+  return numB - numA;
 });
 ---
 
