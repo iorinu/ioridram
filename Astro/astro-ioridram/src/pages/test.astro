@@ -1,0 +1,26 @@
+---
+const pageTitle = "Test Page";
+---
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <p>hello</p>
+    <p class="inline">world</p>
+    <p class="inline">:)</p>
+    <div class="none"><p>this should not be shown</p></div>
+    <style>
+      .none {
+        display: none;
+      }
+      .inline {
+        display: inline;
+      }
+    </style>
+  </body>
+</html>
