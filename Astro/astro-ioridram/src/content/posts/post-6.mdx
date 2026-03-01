@@ -1,0 +1,239 @@
+---
+title: ポリネシアンWebブラウザ自作、3日目 HTMLのパース
+pubDate: 2026-03-01
+description: "Webブラウザ自作記事3日目"
+author: "iori"
+image:
+  url: '/images/posts/browser_icon.png'
+  alt: 'ブラウザ'
+tags: ["programming", "Rust"]
+---
+import LinkCard from '../../components/LinkCard.astro';
+import GitHubCard from '../../components/GitHubCard.astro';
+
+3日目はHTMLのパース処理を実装しました．
+
+# HTMLを取り扱う
+この章ではHTMLを機械が処理しやすい形に分解して，タグなどを識別できるように要素ごとに分解する工程を実装した．
+
+ここではJavaScriptの存在を仮定しない．
+
+まずはパーサもどきを実装する．
+
+想定されるHTMLは以下のもの
+
+```html
+<body>
+  <p>hello</p>
+  <p class="inline">world</p>
+  <p class="inline">:)</p>
+  <div class="none"><p>this should not be shown</p></div>
+  <style>
+    .none {
+      display: none;
+    }
+    .inline {
+      display: inline;
+    }
+  </style>
+</body>
+```
+
+パーサーの実装にはcombineクレートを使用する．
+
+## 要素の分解
+まずは
+```html
+test="foobar"
+```
+
+のようなものを要素に分解する．
+
+これはattribute関数で実装する．
+コードはサイトにあるように以下のようになる
+```rust
+fn attribute<Input>() -> impl Parser<Input, Output = (String, String)>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    (
+        many1::<String, _, _>(letter()), // まずは属性の名前を何文字か読む
+        many::<String, _, _>(space().or(newline())), // 空白と改行を読み飛ばす
+        char('='), // = を読む
+        many::<String, _, _>(space().or(newline())), // 空白と改行を読み飛ばす
+        between(char('"'), char('"'), many1::<String, _, _>(satisfy(|c: char| c != '"'))), // 引用符の間の、引用符を含まない文字を読む
+    )
+        .map(|v| (v.0, v.4)) // はじめに読んだ属性の名前と、最後に読んだ引用符の中の文字列を結果として返す
+}
+```
+
+まず最初に属性の名前を読む．
+今回の例でいえばtestの部分
+
+次に空白と改行を読み飛ばす．
+
+3行の部分で＝を読む
+
+4行目でまた空白と改行を読む．
+
+最後に""の間を読む．
+今回ならfoobarを読む．
+そして，v.0が最初のmany1，v.4が最後のbetween~の部分に対応しているので，
+この関数のOutputである(String, String)の2つは(test: String, foobar: String) で返される．
+
+これによって属性を表す文字列がパースできるようになった．
+
+次に複数の属性値列を取り扱う．
+今回クリアしたい文字列はこのような複数の属性となる．
+
+```html
+test="foobar" abc="def"
+```
+
+これを(test, foobar), (abc, def)
+の2つに分けて，ハッシュマップであるAttrMapにキーと値としてそれぞれ設定できれば成功．
+
+これはサイトには載っていないので自分で実装した．
+
+まず最初に関数は以下のようになった．
+
+```rust
+fn attributes<Input>() -> impl Parser<Input, Output = AttrMap>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    many::<Vec<(String, String)>, _, _>(
+        (many::<String, _, _>(space().or(newline())), attribute()).map(|v| v.1),
+    )
+    .map(|attrs| attrs.into_iter().collect::<AttrMap>())
+}
+```
+
+それぞれの部分の意味を解説する
+- `many::Vec~`  :()の中身を(String, String)のVecに格納する
+- `many::<String,_,_>(space().or(newline()))`  :空白か改行を集める
+- `attribute()`  :まえに作ったattribute関数．この部分で(test, foobar)や(abc, def)が集められる
+- `.map(|v| v.1)`  :attribute関数の部分だけをVecに格納する．
+- `.map(|attrs| attrs.into_iter().collect::<AttrMap>())`  :この部分でVecからAttrMapに変換
+
+## タグの認識
+タグの認識はサイトの実装どおりに行った
+
+たとえば`<p id="test" class="sample">`のようなタグを認識したい
+
+```rust
+fn open_tag<Input>() -> impl Parser<Input, Output = (String, AttrMap)>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    let open_tag_name = many1::<String, _, _>(letter());
+    let open_tag_content = (
+        open_tag_name,
+        many::<String, _, _>(space().or(newline())),
+        attributes(),
+    )
+        .map(|v: (String, _, AttrMap)| (v.0, v.2));
+    between(char('<'), char('>'), open_tag_content)
+}
+```
+
+
+流れとしては
+- many1でタグの種類(今回はp)を格納 
+- attributes()でid="test"などの要素を格納
+
+となる
+
+こんな感じで要素の分解ができてしまえばあとは簡単なので割愛する
+
+# combineクレート
+今回HTMLパーサを実装してみてかなりcombineクレートが重要であると感じた．
+そこで追加でcombineクレートのコードも見てみた．
+<GitHubCard repo="https://github.com/Marwes/combine"/>
+を参考に
+
+## 構造体の定義
+```rust
+pub struct Many<F, P>(P, PhantomData<F>);
+```
+
+- `P` : 内側のパーサー（例：`letter()`）
+- `F` : 結果を集めるコレクションの型（例：`String`, `Vec<char>`）
+- `PhantomData<F>` : Fを実際にはフィールドとして持たないが、型パラメータとして使うためのマーカー
+
+## many関数
+```rust
+pub fn many<F, Input, P>(p: P) -> Many<F, P>
+where
+    Input: Stream,
+    P: Parser<Input>,
+    F: Extend<P::Output> + Default,
+{
+    Many(p, PhantomData)
+}
+```
+
+many関数はシンプルでMany構造体を返す返すだけ．PのPerserが本体．
+
+## Perserトレイト(かなり簡略化している)
+ここはかなり長くて複雑だったので，
+生成AIに簡略化してもらいつつ元のコードも見た．
+
+以下は簡略化したコード．
+```rust
+impl<F, Input, P> Parser<Input> for Many<F, P>
+where
+    Input: Stream,
+    P: Parser<Input>,
+    F: Extend<P::Output> + Default,
+{
+    type Output = F;
+
+    fn parse_stream(&mut self, input: &mut Input) -> Result<F, ...> {
+        // 1. 空のコレクションを作る
+        let mut collection = F::default();  // 例: String::new() や Vec::new()
+
+        loop {
+            // 2. 内側のパーサーを試す
+            match self.0.parse_stream(input) {
+                // 成功 → 結果をコレクションに追加して続行
+                Ok(item) => {
+                    collection.extend(std::iter::once(item));
+                }
+                // 失敗 → ループを抜ける（エラーではない）
+                Err(_) => break,
+            }
+        }
+
+        // 3. 集めた結果を返す
+        Ok(collection)
+    }
+}
+```
+
+処理の流れを図で見ると
+
+入力が `"abc123"` で `many(letter())` を実行した場合：
+```text
+"abc123"
+ ^  letter() → Ok('a') → collectionに追加
+  ^ letter() → Ok('b') → collectionに追加
+   ^ letter() → Ok('c') → collectionに追加
+    ^ letter() → Err    → ループ終了！
+```
+
+結果: Ok("abc"),  残りの入力: "123"
+
+
+# まとめ
+今回はHTMLのパース処理を実装した．
+combineクレートを使用して実装したが、combineクレートのコードも見てみた．
+次回はCSSのパース処理を実装する予定
+
+
+
+
+
