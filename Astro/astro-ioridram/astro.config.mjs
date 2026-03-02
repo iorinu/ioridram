@@ -7,9 +7,11 @@ import cloudflare from "@astrojs/cloudflare";
 import expressiveCode from "astro-expressive-code";
 
 import mdx from "@astrojs/mdx";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://ioridram.com",
   output: "static",
   adapter: cloudflare(),
   integrations: [
@@ -33,5 +35,6 @@ export default defineConfig({
       },
     }),
     mdx(),
+    sitemap(),
   ],
 });
