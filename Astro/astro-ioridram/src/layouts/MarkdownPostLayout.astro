@@ -1,11 +1,51 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-const { frontmatter } = Astro.props;
+const { frontmatter, prevPost, nextPost } = Astro.props;
 ---
 <style>
   .tags {
   display: flex;
   flex-wrap: wrap;
+  }
+
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    gap: 1rem;
+  }
+
+  .post-nav-link {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    max-width: 48%;
+    transition: background-color 0.2s;
+  }
+
+  .post-nav-link:hover {
+    background-color: #f7fafc;
+  }
+
+  .post-nav-link.next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .post-nav-label {
+    font-size: 0.85rem;
+    color: #718096;
+  }
+
+  .post-nav-title {
+    font-weight: 600;
+    color: #2d3748;
+  }
 </style>
 
 <BaseLayout pageTitle={frontmatter.title}>
@@ -24,5 +64,19 @@ const { frontmatter } = Astro.props;
         ))
       }
     </div>
+    <nav class="post-nav">
+      {prevPost && (
+        <a href={`/posts/${prevPost.slug}/`} class="post-nav-link prev">
+          <span class="post-nav-label">← 前の記事</span>
+          <span class="post-nav-title">{prevPost.data.title}</span>
+        </a>
+      )}
+      {nextPost && (
+        <a href={`/posts/${nextPost.slug}/`} class="post-nav-link next">
+          <span class="post-nav-label">次の記事 →</span>
+          <span class="post-nav-title">{nextPost.data.title}</span>
+        </a>
+      )}
+    </nav>
   </article>
 </BaseLayout>
