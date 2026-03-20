@@ -1,4 +1,5 @@
 ---
+slug: post-1
 title: 最初の記事
 pubDate: 2026-01-28
 description: "これは最初の記事です"

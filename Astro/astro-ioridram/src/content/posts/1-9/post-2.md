@@ -1,4 +1,5 @@
 ---
+slug: post-2
 title: neovimから周りにバレずにツイートしたい
 pubDate: 2026-01-29
 description: "neovimpluginの紹介"
