@@ -7,8 +7,8 @@ import { getCollection } from "astro:content";
 export async function getStaticPaths({ paginate }) {
   const allPosts = await getCollection("posts", ({ data }) => !data.draft);
   allPosts.sort((a, b) => {
-    const numA = parseInt(a.slug.match(/\d+/)?.[0] ?? "0");
-    const numB = parseInt(b.slug.match(/\d+/)?.[0] ?? "0");
+    const numA = parseInt(a.data.slug.match(/\d+/)?.[0] ?? "0");
+    const numB = parseInt(b.data.slug.match(/\d+/)?.[0] ?? "0");
     return numB - numA;
   });
   return paginate(allPosts, { pageSize: 10 });
@@ -23,7 +23,7 @@ const { page } = Astro.props;
     {
       page.data.map((post) => (
         <BlogPost
-          url={`/posts/${post.slug}`}
+          url={`/posts/${post.data.slug}`}
           title={post.data.title}
           image={post.data.image}
           pubDate={post.data.pubDate}
