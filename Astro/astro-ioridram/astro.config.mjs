@@ -2,7 +2,6 @@
 import { defineConfig } from "astro/config";
 
 import preact from "@astrojs/preact";
-import cloudflare from "@astrojs/cloudflare";
 
 import expressiveCode from "astro-expressive-code";
 
@@ -13,7 +12,6 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   site: "https://ioridram.com",
   output: "static",
-  adapter: cloudflare(),
   integrations: [
     preact(),
     expressiveCode({
