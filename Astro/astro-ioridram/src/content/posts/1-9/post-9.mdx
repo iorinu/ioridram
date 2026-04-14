@@ -8,7 +8,7 @@ image:
   url: '/images/posts/post-8/logo.png'
   alt: 'pwatchのロゴ'
 tags: ["programming", "Rust"]
-draft: true
+draft: false
 ---
 import LinkCard from '../../../components/LinkCard.astro';
 import GitHubCard from '../../../components/GitHubCard.astro';
@@ -16,6 +16,66 @@ import GitHubCard from '../../../components/GitHubCard.astro';
 前回の自作Webブラウザの記事からとんでもなく更新が遅れましたが、ぼちぼちやっていきます。
 
 今回はCSSを取り扱えるようにしていきます。
+
+## 実装
+まずは前回同様にGitHubから演習用実装をダウンロードします。
+<GitHubCard repo='tiny-browserbook/exercise-css' />
+
+
+最初の実装は宣言(declaration)部分の実装をします。
+```.test{ display: none; }```
+のようなCSS文字列の中の```display: none```の部分をパースできる様にします。
+
+まずサイト通りに実装を行いましたが、コンパイルができませんでした。
+```rust
+fn declarations<Input>() -> impl Parser<Input, Output = Vec<Declaration>>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    sep_end_by(
+        declaration().skip(whitespaces()),
+        char::char(';').skip(whitespaces()),
+    )
+}
+
+fn declaration<Input>() -> impl Parser<Input, Output = Declaration>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    (
+        many1(letter()).skip(whitespaces()),
+        char::char(':').skip(whitespaces()),
+        css_value(),
+    )
+        .map(|(k, _, v)| Declaration { name: k, value: v })
+}
+
+fn css_value<Input>() -> impl Parser<Input, Output = CSSValue>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    let keyword = many1(letter()).map(|s| CSSValue::Keyword(s));
+    keyword
+}
+```
+原因としてwhitespacesが定義されていないことが挙げられるのでまずはこの部分を実装しました。
+前後の文脈と関数名からwhitespacesは多分空白をとる関数なので以下のように実装しました。
+
+```rust
+fn whitespaces<Input>() -> impl Parser<Input, Output = String>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    many(space())
+}
+```
+
+HTMLのパースを行った時と同様にmanyを使用することで空白を認識できる様にしています。
+
 
 メモ：whitespacesが定義されていない
 
