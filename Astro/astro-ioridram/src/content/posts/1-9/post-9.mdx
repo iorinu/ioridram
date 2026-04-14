@@ -5,10 +5,10 @@ pubDate: 2026-04-12
 description: "ポリネシアン4日目"
 author: "iori"
 image:
-  url: '/images/posts/post-8/logo.png'
-  alt: 'pwatchのロゴ'
+  url: '/images/posts/browser_icon.png'
+  alt: 'ブラウザ'
 tags: ["programming", "Rust"]
-draft: true
+draft: false
 ---
 import LinkCard from '../../../components/LinkCard.astro';
 import GitHubCard from '../../../components/GitHubCard.astro';
@@ -17,11 +17,65 @@ import GitHubCard from '../../../components/GitHubCard.astro';
 
 今回はCSSを取り扱えるようにしていきます。
 
+参考にしているサイトはこちらです。
+<LinkCard url="https://browserbook.shift-js.info/" />
+
+## 前提のCSSのデータ構造
+CSSのデータ構造としては、参考にしているサイトの通り簡単に考えるなら2つに分けられます
+> ```rust
+> #[derive(Debug, PartialEq)]
+> struct Stylesheet {
+>     pub rules: Vec<Rule>,
+> }
+>
+> enum Rule {
+>     AtRule(AtRule),
+>     QualifiedRule(QualifiedRule),
+> }
+>
+> // 厳密には異なるが、一旦ここでは同一視する
+> type StyleRule = QualifiedRule;
+> ```
+
+これは```AtRule```が＠がついたルールを表しており、
+例えば自分のサイトであればフォントを変更しているので
+```css
+@font-face {
+  font-family: "HackGenConsoleNF";
+  src: url("/fonts/HackGenConsoleNF-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+```
+のように使用しています。CSSそのものの振る舞いについてを規定する用途で用いられている様です。
+他には```@import```や```@page```などがあるようです。
+
+```QualifiedRule```が```div {display: none;}```の様なよくみる対象にどの様なスタイルを当てるかを表しています。
+
+これらをHTMLの時と同様にパースして処理がしやすい様にします。
+
+また簡単のため、以下の制限が入っています。
+
+- 0 個以上の style rule を持つ。
+- 全ての style rule について、以下が成り立つ。
+  - comma-separated list of selectors の部分には combinator が含まれない。
+  - comma-separated list of selectors 内に含まれる simple selector は以下のうちどれかである。
+    - Universal Selector
+    - Class Selector
+    - Type Selector
+    - Attribute Selector
+  - declaration list の中には CSS Display Module Level 3 で定義されている display プロパティのみを持ち、このプロパティの値としては inline、none、block のどれかのみを指定できる。
+
+やってる時はそこまで気にしてなかったんですが、
+よくよく考えたらこれ結構ガッツリ絞ってるんでレンダリングまでいけたらここは少しできることを増やしたいです。
+目標はこのサイトが表示できるとこまで。
+
 ## 実装
 まずは前回同様にGitHubから演習用実装をダウンロードします。
 <GitHubCard repo='tiny-browserbook/exercise-css' />
 
-
+### 宣言の実装
 最初の実装は宣言(declaration)部分の実装をします。
 ```.test{ display: none; }```
 のようなCSS文字列の中の```display: none```の部分をパースできる様にします。
@@ -76,6 +130,127 @@ where
 
 HTMLのパースを行った時と同様にmanyを使用することで空白を認識できる様にしています。
 
-メモ：rules関数が最初にwhitespacesを入れとかないとエラーになる可能性がある
+### セレクタの処理
+次は```.test { display: none; }```の様なCSS文字列の中の```.test```の部分を取り扱う処理を実装します。
+ここはサイト通りに実装したので飛ばします。
+
+### ルールの処理
+次にルールの処理を行います。
+これもサイト通りに実装で違いないと思います。
+```rust
+fn rule<Input>() -> impl Parser<Input, Output = Rule>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    (
+        selectors().skip(whitespaces()),
+        char::char('{').skip(whitespaces()),
+        declarations().skip(whitespaces()),
+        char::char('}'),
+    )
+        .map(|(selectors, _, declarations, _)| Rule {
+            selectors,
+            declarations,
+        })
+}
+```
+
+流れとしてはセレクタを取得→`{`を取得→宣言を取得→`}`を取得
+という今まで通りのやつです。
+
+### スタイルシートへの格納
+最後にこれらのルールをStylesheetという構造体に格納して終わりです。
+```rust
+pub fn parse(raw: String) -> Stylesheet {
+    rules()
+        .parse(raw.as_str())
+        .map(|(rules, _)| Stylesheet::new(rules))
+        .unwrap()
+}
+
+fn rules<Input>() -> impl Parser<Input, Output = Vec<Rule>>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    (whitespaces(), many(rule().skip(whitespaces()))).map(|(_, rules)| rules)
+}
+```
+
+これの実装も```many(rule()...```の前に```whitespaces()```を入れ忘れたこと以外は実装できたので意外と分かってきた気がします。
 
 
+## 拡張
+この記事書いててやっぱほとんど認識できないのは面白くないと思ったので、
+とりあえずよく使いそうなパースができる様に生成AIに聞きながらこれを拡張していきます。
+
+まず聞いてみたところ```whitespaces```関数は今のままだとまずいらしく、
+```rust
+fn whitespaces<Input>() -> impl Parser<Input, Output = String>
+where
+    Input: Stream<Token = char>,
+    Input::Error: ParseError<Input::Token, Input::Range, Input::Position>,
+{
+    many(space())
+}
+```
+
+の```many(space())```では空白のみにしか対応できず、改行などに対応できないので少し改良して
+
+```rust
+many(satisfy(|c: char| c.is_whitespace()))
+```
+の様に変更しました。
+
+
+次に数値・単位付きの値が認識できないといった問題があります。
+
+`css_value()` が `many1(letter())` のみだったため、`2em` や `16px` のようなよくある値を認識できません。
+例えば`2` は数字なので `letter()` で弾かれます。
+
+**解決法としてCSSValue に Length を追加しました**
+
+```rust
+// before
+pub enum CSSValue {
+    Keyword(String),
+}
+
+// after
+pub enum CSSValue {
+    Keyword(String),
+    Length(f64, String),  // (2.0, "em")
+}
+```
+今まではKeywordのみを持っていましたが、ここに数字と単位を持てる様なLengthを追加することができるようにしました。
+
+
+**css_value() の拡張**
+
+```rust
+fn css_value<Input>() -> impl Parser<Input, Output = CSSValue> {
+    let length = (
+        many1(satisfy(|c: char| c.is_numeric() || c == '.')),
+        many1(letter()),
+    )
+        .map(|(num, unit): (String, String)| {
+            CSSValue::Length(num.parse().unwrap(), unit)
+        });
+
+    let keyword = many1(letter()).map(CSSValue::Keyword);
+
+    choice((length, keyword))
+}
+```
+
+数字で始まる場合は Length としてパースし、アルファベットで始まる場合は従来通り Keyword としてパースします。`choice()` は左から順に試みるので、`length` を先に置くのがポイントです。
+
+
+これらの変更で `h1`、`h2` `font-size: 2px`など基本的なCSSが扱えるようになりました。次のステップとしてはカラー値 (`#fff`、`rgb()`) や複数値 (`margin: 10px 20px`) への対応が考えられます。
+
+
+## 終わりに
+今回はCSSをパースして、スタイルシートを作成するところまで行いました。
+次回は前にやったHTMLの要素とスタイルシートからレンダリングツリーを作成します。
+レンダリングまでいけたらやっとブラウザらしくなってくるので楽しみです。
