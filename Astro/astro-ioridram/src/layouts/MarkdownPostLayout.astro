@@ -48,7 +48,7 @@ const { frontmatter, prevPost, nextPost } = Astro.props;
   }
 </style>
 
-<BaseLayout pageTitle={frontmatter.title}>
+<BaseLayout pageTitle={frontmatter.title} description={frontmatter.description}>
   <article class="markdown-post">
     <h1>{frontmatter.title}</h1>
     <p class="post-date">Published on: {frontmatter.pubDate.toString()}</p>
